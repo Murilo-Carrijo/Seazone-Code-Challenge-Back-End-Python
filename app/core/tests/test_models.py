@@ -14,10 +14,11 @@ class ModelTests(TestCase):
         """Teste para adicionar um novo imóvel com sucesso"""
 
         properties = models.Properties.objects.create(
+            title='Imóvel 1',
             max_people=10,
             qty_bathrooms=2,
             pet_frendly=True,
             cleaning_value=Decimal('50.50'),
         )
 
-        self.assertEqual(int(properties), properties.max_people)
+        self.assertEqual(str(properties), properties.title)
