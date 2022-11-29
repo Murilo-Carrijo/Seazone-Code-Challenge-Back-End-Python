@@ -11,3 +11,11 @@ class PropertiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Properties
         fields = '__all__'
+
+
+class PropertyDetailSerializer(serializers.ModelSerializer):
+    """Serializers para detalhe dos imóveis."""
+
+    class Meta:
+        model = Properties
+        fields = '__all__'
