@@ -58,3 +58,21 @@ class PropetiesAPITest(TestCase):
 
         serializer = PropertyDetailSerializer(new_property)
         self.assertEqual(res.data, serializer.data)
+
+    def teste_create_property(self):
+        """Teste para adicionar um novo imóvel."""
+        payload = {
+            'title': 'Imóvel 1',
+            'max_people': 5,
+            'qty_bathrooms': 2,
+            'pet_frendly': True,
+            'cleaning_value': Decimal('50.50'), 
+        }
+
+        res = self.client.post(PROPERTIES_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        new_property = Properties.objects.get(id=res.data['id'])
+        for k, v in payload.items():
+            self.assertEqual(getattr(new_property, k), v)
+        
