@@ -11,9 +11,14 @@ from rest_framework import status
 
 from core.models import Properties
 
-from properties.serializers import PropertiesSerializer
+from properties.serializers import PropertiesSerializer, PropertyDetailSerializer
 
 PROPERTIES_URL = reverse('properties:properties-list')
+
+
+def detail_url(property_id):
+    """Criar e retornar os detalhes da URL"""
+    return reverse('properties:properties-detail', args=[property_id])
 
 def create_properties(**params):
     """Criar e retornar o imóvel"""
@@ -42,4 +47,14 @@ class PropetiesAPITest(TestCase):
         properties_list = Properties.objects.all().order_by('-id')
         serializer = PropertiesSerializer(properties_list, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_get_property_detail(self):
+        """Teste de retornar os detalhes do imóvel."""
+        new_property = create_properties()
+
+        url = detail_url(new_property.id)
+        res = self.client.get(url)
+
+        serializer = PropertyDetailSerializer(new_property)
         self.assertEqual(res.data, serializer.data)
