@@ -16,5 +16,5 @@ class PropertiesViewSet(viewsets.ModelViewSet):
         """Retorna a classe serializer via request."""
         if self.action == 'list':
             return PropertiesSerializer
-        
+
         return self.serializer_class

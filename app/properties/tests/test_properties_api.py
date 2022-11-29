@@ -12,7 +12,11 @@ from rest_framework import status
 
 from core.models import Properties
 
-from properties.serializers import PropertiesSerializer, PropertyDetailSerializer
+from properties.serializers import (
+    PropertiesSerializer,
+    PropertyDetailSerializer,
+)
+
 
 PROPERTIES_URL = reverse('properties:properties-list')
 
@@ -20,6 +24,7 @@ PROPERTIES_URL = reverse('properties:properties-list')
 def detail_url(property_id):
     """Criar e retornar os detalhes da URL"""
     return reverse('properties:properties-detail', args=[property_id])
+
 
 def create_properties(**params):
     """Criar e retornar o imóvel"""
@@ -35,14 +40,6 @@ def create_properties(**params):
     new_property = Properties.objects.create(**defaults)
     return new_property
 
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
-        # 👇️ if passed in object is instance of Decimal
-        # convert it to a string
-        if isinstance(obj, Decimal):
-            return str(obj)
-        # 👇️ otherwise use the default behavior
-        return json.JSONEncoder.default(self, obj)
 
 class PropetiesAPITest(TestCase):
     """Teste dos requests da API"""
@@ -76,7 +73,7 @@ class PropetiesAPITest(TestCase):
             'max_people': 5,
             'qty_bathrooms': 2,
             'pet_frendly': True,
-            'cleaning_value': Decimal('50.50'), 
+            'cleaning_value': Decimal('50.50'),
         }
 
         res = self.client.post(PROPERTIES_URL, payload)
@@ -85,7 +82,7 @@ class PropetiesAPITest(TestCase):
         new_property = Properties.objects.get(id=res.data['id'])
         for k, v in payload.items():
             self.assertEqual(getattr(new_property, k), v)
-    
+
     def test_partial_update(self):
         """Teste para a edição parcial do imóvel."""
         new_property = create_properties()
@@ -93,7 +90,6 @@ class PropetiesAPITest(TestCase):
         payload = json.dumps(new_title)
         url = detail_url(new_property.id)
         res = self.client.patch(url, payload, content_type='application/json')
-
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         new_property.refresh_from_db()
@@ -108,19 +104,23 @@ class PropetiesAPITest(TestCase):
             'max_people': 7,
             'qty_bathrooms': 3,
             'pet_frendly': False,
-            'cleaning_value': '75.99', 
+            'cleaning_value': '75.99',
         }
+
         payload = json.dumps(edit_property)
         url = detail_url(new_property.id)
         res = self.client.put(url, payload, content_type='application/json')
-
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         new_property.refresh_from_db()
         self.assertEqual(new_property.title, edit_property['title'])
         self.assertEqual(new_property.max_people, edit_property['max_people'])
-        self.assertEqual(new_property.qty_bathrooms, edit_property['qty_bathrooms'])
-        self.assertEqual(new_property.pet_frendly, edit_property['pet_frendly'])
+        self.assertEqual(
+            new_property.qty_bathrooms, edit_property['qty_bathrooms']
+        )
+        self.assertEqual(
+            new_property.pet_frendly, edit_property['pet_frendly']
+        )
 
     def test_delete_property(self):
         """Teste para deletar imóvel"""
@@ -129,11 +129,6 @@ class PropetiesAPITest(TestCase):
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Properties.objects.filter(id=new_property.id).exists())
-
-
-
-
-
-
-        
+        self.assertFalse(
+            Properties.objects.filter(id=new_property.id).exists()
+        )

@@ -5,6 +5,7 @@ from rest_framework import serializers
 
 from core.models import Properties
 
+
 class PropertiesSerializer(serializers.ModelSerializer):
     """Serializers para imóveis."""
 
