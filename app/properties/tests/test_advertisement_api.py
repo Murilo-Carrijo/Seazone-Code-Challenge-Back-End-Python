@@ -2,6 +2,7 @@
 Testes para a API de anúncios.
 """
 from decimal import Decimal
+import json
 
 from django.urls import reverse
 from django.test import TestCase
@@ -17,6 +18,11 @@ from properties.serializers import AdvertisementSerializer
 
 
 ADVERTISEMENT_URL = reverse('properties:advertisement-list')
+
+
+def detail_url(advertisement_id):
+    """Criar e retornar os detalhes da URL"""
+    return reverse('properties:advertisement-detail', args=[advertisement_id])
 
 
 def create_properties(**params):
@@ -39,6 +45,7 @@ def create_advertisement(**params):
     properties = create_properties()
 
     defaults = {
+        'title': 'Casa de campo',
         'property_id': properties,
         'ad_platform': 'AirBnb',
         'plataform_fee': Decimal('4.99'),
@@ -63,3 +70,16 @@ class AdvertisementAPITest(TestCase):
         serializer = AdvertisementSerializer(all_advertisement, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+    
+    def test_partial_update(self):
+        """Teste para a edição parcial do anúncio"""
+        new_advertisement = create_advertisement()
+        new_title = {'title': 'Casa na praia'}
+        payload = json.dumps(new_title)
+        url = detail_url(new_advertisement.id)
+        res = self.client.patch(url, payload, content_type='application/json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_advertisement.refresh_from_db()
+        self.assertEqual(new_advertisement.title, new_title['title'])
+        self.assertEqual(new_advertisement.ad_platform, 'AirBnb')
