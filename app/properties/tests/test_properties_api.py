@@ -3,6 +3,7 @@ Testes para as APIs referente aos Imóveis
 """
 
 from decimal import Decimal
+import json
 
 from django.test import TestCase
 from django.urls import reverse
@@ -33,6 +34,15 @@ def create_properties(**params):
 
     new_property = Properties.objects.create(**defaults)
     return new_property
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        # 👇️ if passed in object is instance of Decimal
+        # convert it to a string
+        if isinstance(obj, Decimal):
+            return str(obj)
+        # 👇️ otherwise use the default behavior
+        return json.JSONEncoder.default(self, obj)
 
 class PropetiesAPITest(TestCase):
     """Teste dos requests da API"""
@@ -75,4 +85,42 @@ class PropetiesAPITest(TestCase):
         new_property = Properties.objects.get(id=res.data['id'])
         for k, v in payload.items():
             self.assertEqual(getattr(new_property, k), v)
+    
+    def test_partial_update(self):
+        """Teste para a edição parcial do imóvel."""
+        new_property = create_properties()
+        new_title = {'title': 'Imóvel 1 atualizado'}
+        payload = json.dumps(new_title)
+        url = detail_url(new_property.id)
+        res = self.client.patch(url, payload, content_type='application/json')
+
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_property.refresh_from_db()
+        self.assertEqual(new_property.title, new_title['title'])
+        self.assertEqual(new_property.max_people, 5)
+
+    def test_full_update(self):
+        new_property = create_properties()
+        edit_property = {
+            'title': 'Imóvel 1 atualizado',
+            'max_people': 7,
+            'qty_bathrooms': 3,
+            'pet_frendly': False,
+            'cleaning_value': '75.99', 
+        }
+        payload = json.dumps(edit_property)
+        url = detail_url(new_property.id)
+        res = self.client.put(url, payload, content_type='application/json')
+
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_property.refresh_from_db()
+        self.assertEqual(new_property.title, edit_property['title'])
+        self.assertEqual(new_property.max_people, edit_property['max_people'])
+        self.assertEqual(new_property.qty_bathrooms, edit_property['qty_bathrooms'])
+        self.assertEqual(new_property.pet_frendly, edit_property['pet_frendly'])
+
+
+
         
