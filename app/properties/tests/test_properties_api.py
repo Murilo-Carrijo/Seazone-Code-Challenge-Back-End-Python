@@ -129,7 +129,7 @@ class PropetiesAPITest(TestCase):
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Properties.objects.filter(id=new_property.id).exists())
+        self.assertFalse(Properties.objects.filter(id=new_property.id).exists())
 
 
 
