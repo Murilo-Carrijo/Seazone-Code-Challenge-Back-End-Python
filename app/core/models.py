@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 
 
 class Properties(models.Model):
@@ -28,4 +27,3 @@ class Advertisement(models.Model):
 
     def __str__(self) -> str:
         return f'({self.title} - {self.ad_platform})'
-

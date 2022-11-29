@@ -42,4 +42,7 @@ class ModelTests(TestCase):
             plataform_fee=Decimal('4.99'),
         )
 
-        self.assertEqual(str(advertisement), f'({advertisement.title} - {advertisement.ad_platform})')
+        self.assertEqual(
+            str(advertisement),
+            f'({advertisement.title} - {advertisement.ad_platform})',
+        )

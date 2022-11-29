@@ -38,4 +38,3 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
             return AdvertisementSerializer
 
         return self.serializer_class
-

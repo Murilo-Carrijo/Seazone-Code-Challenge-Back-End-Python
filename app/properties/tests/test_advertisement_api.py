@@ -33,6 +33,7 @@ def create_properties(**params):
     new_property = Properties.objects.create(**defaults)
     return new_property
 
+
 def create_advertisement(**params):
     """Criar e retornar o anúncio"""
     properties = create_properties()
