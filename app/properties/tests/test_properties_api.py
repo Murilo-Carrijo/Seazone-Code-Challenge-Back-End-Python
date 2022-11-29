@@ -101,6 +101,7 @@ class PropetiesAPITest(TestCase):
         self.assertEqual(new_property.max_people, 5)
 
     def test_full_update(self):
+        """Teste para a edição total do imóvel."""
         new_property = create_properties()
         edit_property = {
             'title': 'Imóvel 1 atualizado',
@@ -120,6 +121,18 @@ class PropetiesAPITest(TestCase):
         self.assertEqual(new_property.max_people, edit_property['max_people'])
         self.assertEqual(new_property.qty_bathrooms, edit_property['qty_bathrooms'])
         self.assertEqual(new_property.pet_frendly, edit_property['pet_frendly'])
+
+    def test_delete_property(self):
+        """Teste para deletar imóvel"""
+        new_property = create_properties()
+        url = detail_url(new_property.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Properties.objects.filter(id=new_property.id).exists())
+
+
+
 
 
 
