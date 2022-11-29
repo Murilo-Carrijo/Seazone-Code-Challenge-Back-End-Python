@@ -27,10 +27,19 @@ class ModelTests(TestCase):
     def test_create_advertisement(self):
         """Teste para adicionar um novo anuncio com sucesso"""
 
+        properties = models.Properties.objects.create(
+            title='Imóvel 1',
+            max_people=10,
+            qty_bathrooms=2,
+            pet_frendly=True,
+            cleaning_value=Decimal('50.50'),
+        )
+
         advertisement = models.Advertisement.objects.create(
-            property_id='1',
+            title='Aluga-se',
+            property_id=properties,
             ad_platform='AirBnb',
             plataform_fee=Decimal('4.99'),
         )
 
-        self.assertEqual(str(advertisement), advertisement.property_id)
+        self.assertEqual(str(advertisement), f'({advertisement.title} - {advertisement.ad_platform})')
