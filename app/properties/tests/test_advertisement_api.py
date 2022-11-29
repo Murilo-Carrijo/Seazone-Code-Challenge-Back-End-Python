@@ -16,7 +16,7 @@ from core.models import (
 from properties.serializers import AdvertisementSerializer
 
 
-ADVERTISEMENT_URL = reverse('propertes:advertisement-list')
+ADVERTISEMENT_URL = reverse('properties:advertisement-list')
 
 
 def create_properties(**params):
@@ -59,6 +59,6 @@ class AdvertisementAPITest(TestCase):
         res = self.client.get(ADVERTISEMENT_URL)
 
         all_advertisement = Advertisement.objects.all().order_by('-id')
-        serializer = AdvertisementSerializer(all_advertisement, may=True)
+        serializer = AdvertisementSerializer(all_advertisement, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
