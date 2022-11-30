@@ -17,7 +17,7 @@ API para gerenciar a locação de imóveis
   <summary><strong>🤷🏽‍♀️ Como rodar o projeto</strong></summary><br />
   1. Clone o repositório - `git@github.com:Murilo-Carrijo/Seazone-Code-Challenge-Back-End-Python.git`
   
-  2. Entre na pasta do repositório que você acabou de clonar - `cd eazone-Code-Challenge-Back-End-Python`
+  2. Entre na pasta do repositório que você acabou de clonar - `cd Seazone-Code-Challenge-Back-End-Python`
 
   3. Verifique se a porta 8000 está disponível, pois o projeto está configurado para todar nesta porta;
 
