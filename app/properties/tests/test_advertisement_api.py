@@ -83,3 +83,25 @@ class AdvertisementAPITest(TestCase):
         new_advertisement.refresh_from_db()
         self.assertEqual(new_advertisement.title, new_title['title'])
         self.assertEqual(new_advertisement.ad_platform, 'AirBnb')
+    
+    def test_full_update(self):
+        """Teste para a edição total do anúncio."""
+        new_advertisement = create_advertisement()
+        edit_advertisement = {
+            'title': 'Casa na praia',
+            'property_id': new_advertisement.id,
+            'ad_platform': 'Trivago',
+            'plataform_fee': '3.89',
+        }
+
+        payload = json.dumps(edit_advertisement)
+        url = detail_url(new_advertisement.id)
+        res = self.client.put(url, payload, content_type='application/json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_advertisement.refresh_from_db()
+        self.assertEqual(new_advertisement.title, edit_advertisement['title'])
+        self.assertEqual(new_advertisement.max_people, edit_advertisement['property_id'])
+        self.assertEqual(
+            new_advertisement.qty_bathrooms, edit_advertisement['ad_platform']
+        )
