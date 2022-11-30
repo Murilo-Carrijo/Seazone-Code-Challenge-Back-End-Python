@@ -106,3 +106,14 @@ class AdvertisementAPITest(TestCase):
         self.assertEqual(
             new_advertisement.ad_platform, edit_advertisement['ad_platform']
         )
+
+    def test_delete_property(self):
+        """Teste para deletar imóvel"""
+        new_advertisement = create_advertisement()
+        url = detail_url(new_advertisement.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(
+            Properties.objects.filter(id=new_advertisement.id).exists()
+        )
