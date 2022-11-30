@@ -70,7 +70,7 @@ class AdvertisementAPITest(TestCase):
         serializer = AdvertisementSerializer(all_advertisement, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
-    
+
     def test_partial_update(self):
         """Teste para a edição parcial do anúncio"""
         new_advertisement = create_advertisement()
@@ -83,7 +83,7 @@ class AdvertisementAPITest(TestCase):
         new_advertisement.refresh_from_db()
         self.assertEqual(new_advertisement.title, new_title['title'])
         self.assertEqual(new_advertisement.ad_platform, 'AirBnb')
-    
+
     def test_full_update(self):
         """Teste para a edição total do anúncio."""
         new_advertisement = create_advertisement()
@@ -102,7 +102,9 @@ class AdvertisementAPITest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         new_advertisement.refresh_from_db()
         self.assertEqual(new_advertisement.title, edit_advertisement['title'])
-        self.assertEqual(new_advertisement.property_id.id, edit_advertisement['property_id'])
+        self.assertEqual(
+            new_advertisement.property_id.id, edit_advertisement['property_id']
+        )
         self.assertEqual(
             new_advertisement.ad_platform, edit_advertisement['ad_platform']
         )
